@@ -4,40 +4,36 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>40Hz Player</title>
-  <style>
-    body { font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; padding: 24px; }
-    button { font-size: 20px; padding: 14px 18px; }
-    .note { margin-top: 12px; opacity: 0.8; }
-  </style>
 </head>
 <body>
-  <h1>40Hz Player</h1>
+  <h1>40Hz テスト</h1>
 
-  <audio id="player" preload="auto" controls>
-    <source src="40Hz_music.mp3" type="audio/mpeg">
+  <p>1) 下の「再生」を押す（まずここが鳴るか確認）</p>
+
+  <audio id="a" controls preload="auto">
+    <source src="./40Hz_music.mp3" type="audio/mpeg">
+    お使いのブラウザは audio に対応していません。
   </audio>
 
-  <div style="margin-top:16px;">
-    <button id="playBtn">▶ 再生する</button>
-    <button id="stopBtn">■ 停止</button>
-  </div>
-
-  <p class="note">
-    ※ iPhone/Chromeでは「自動再生」は基本ブロックされます。最初の1回だけこのボタンを押してください。
+  <p>
+    <button id="play">再生</button>
+    <button id="stop">停止</button>
   </p>
 
   <script>
-    const audio = document.getElementById("player");
-    document.getElementById("playBtn").addEventListener("click", async () => {
+    const a = document.getElementById('a');
+    document.getElementById('play').addEventListener('click', async () => {
       try {
-        await audio.play();
+        a.currentTime = 0;
+        await a.play();
       } catch (e) {
-        alert("再生できませんでした。音量やマナーモード、ブラウザの自動再生制限をご確認ください。");
+        alert('再生できません: ' + e);
+        console.error(e);
       }
     });
-    document.getElementById("stopBtn").addEventListener("click", () => {
-      audio.pause();
-      audio.currentTime = 0;
+    document.getElementById('stop').addEventListener('click', () => {
+      a.pause();
+      a.currentTime = 0;
     });
   </script>
 </body>
