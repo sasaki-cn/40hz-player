@@ -5,115 +5,39 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>40Hz Player</title>
   <style>
-    body { font-family: system-ui, -apple-system, "Segoe UI", sans-serif; padding: 18px; line-height: 1.5; }
-    .box { max-width: 520px; margin: 0 auto; }
-    button { font-size: 18px; padding: 12px 14px; width: 100%; margin: 10px 0; }
-    input { font-size: 18px; padding: 10px; width: 100%; }
-    .status { padding: 10px; background: #f3f3f3; border-radius: 8px; margin-top: 10px; }
-    small { color:#555; }
+    body { font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; padding: 24px; }
+    button { font-size: 20px; padding: 14px 18px; }
+    .note { margin-top: 12px; opacity: 0.8; }
   </style>
 </head>
 <body>
-  <div class="box">
-    <h1>40Hz アラーム（Web）</h1>
+  <h1>40Hz Player</h1>
 
-    <p>
-      ① まず「音の許可を取る」を押す（1回だけ）<br>
-      ② 再生したい時刻を入れて「時刻をセット」<br>
-      ③ そのまま画面オフ（ロック）で待つ
-    </p>
+  <audio id="player" preload="auto" controls>
+    <source src="40Hz_music.mp3" type="audio/mpeg">
+  </audio>
 
-    <button id="unlockBtn">① 音の許可を取る（押したらすぐ止めます）</button>
-
-    <label>② 再生時刻（24時間）</label>
-    <input id="timeInput" type="time" step="60" />
-
-    <button id="setBtn">② 時刻をセット</button>
-    <button id="stopBtn">停止</button>
-
-    <div class="status" id="status">状態：未設定</div>
-
-    <hr>
-    <p><small>
-      ※iPhoneは「ユーザー操作なしの自動再生」を制限します。最初に①を押して許可を取る方式にしています。<br>
-      ※ページを閉じたり、Safariを完全に終了すると動きません。
-    </small></p>
-
-    <audio id="player" preload="auto" playsinline>
-      <source src="40Hz_music.mp3" type="audio/mpeg">
-    </audio>
+  <div style="margin-top:16px;">
+    <button id="playBtn">▶ 再生する</button>
+    <button id="stopBtn">■ 停止</button>
   </div>
 
+  <p class="note">
+    ※ iPhone/Chromeでは「自動再生」は基本ブロックされます。最初の1回だけこのボタンを押してください。
+  </p>
+
   <script>
-    const player = document.getElementById("player");
-    const unlockBtn = document.getElementById("unlockBtn");
-    const setBtn = document.getElementById("setBtn");
-    const stopBtn = document.getElementById("stopBtn");
-    const timeInput = document.getElementById("timeInput");
-    const statusEl = document.getElementById("status");
-
-    let timerId = null;
-
-    function setStatus(msg) {
-      statusEl.textContent = "状態：" + msg;
-    }
-
-    // ① 音の許可を取る：一瞬だけ再生→すぐ停止（許可を通す目的）
-    unlockBtn.addEventListener("click", async () => {
+    const audio = document.getElementById("player");
+    document.getElementById("playBtn").addEventListener("click", async () => {
       try {
-        player.loop = false;
-        player.currentTime = 0;
-        await player.play();
-        setStatus("音の許可OK（いま一瞬だけ鳴りました）");
-        setTimeout(() => {
-          player.pause();
-          player.currentTime = 0;
-        }, 300);
+        await audio.play();
       } catch (e) {
-        setStatus("音の許可が取れませんでした（もう一度①を押してみてください）");
+        alert("再生できませんでした。音量やマナーモード、ブラウザの自動再生制限をご確認ください。");
       }
     });
-
-    // ② 時刻をセット
-    setBtn.addEventListener("click", async () => {
-      if (!timeInput.value) {
-        setStatus("再生時刻を入れてください");
-        return;
-      }
-
-      // 既存タイマー停止
-      if (timerId) clearTimeout(timerId);
-
-      const [hh, mm] = timeInput.value.split(":").map(Number);
-      const now = new Date();
-      const target = new Date();
-      target.setHours(hh, mm, 0, 0);
-
-      // もし時刻が過ぎてたら翌日に回す
-      if (target <= now) target.setDate(target.getDate() + 1);
-
-      const ms = target - now;
-      setStatus(`セット完了：${target.toLocaleString()} に再生します（あと ${Math.round(ms/60000)} 分）`);
-
-      timerId = setTimeout(async () => {
-        try {
-          player.loop = true;       // 必要ならループ
-          player.currentTime = 0;
-          await player.play();
-          setStatus("再生中（40Hz）");
-        } catch (e) {
-          setStatus("再生できませんでした（ページがバックグラウンドで止まった可能性）");
-        }
-      }, ms);
-    });
-
-    // 停止
-    stopBtn.addEventListener("click", () => {
-      if (timerId) clearTimeout(timerId);
-      timerId = null;
-      player.pause();
-      player.currentTime = 0;
-      setStatus("停止しました");
+    document.getElementById("stopBtn").addEventListener("click", () => {
+      audio.pause();
+      audio.currentTime = 0;
     });
   </script>
 </body>
