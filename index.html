@@ -1,40 +1,12 @@
 <!doctype html>
-<html lang="ja">
+<html>
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>40Hz Player</title>
+<meta charset="utf-8">
+<title>40Hz Auto</title>
 </head>
 <body>
-  <h1>40Hz テスト</h1>
-
-  <p>1) 下の「再生」を押す（まずここが鳴るか確認）</p>
-
-  <audio id="a" controls preload="auto">
-    <source src="./40Hz_music.mp3" type="audio/mpeg">
-    お使いのブラウザは audio に対応していません。
-  </audio>
-
-  <p>
-    <button id="play">再生</button>
-    <button id="stop">停止</button>
-  </p>
-
-  <script>
-    const a = document.getElementById('a');
-    document.getElementById('play').addEventListener('click', async () => {
-      try {
-        a.currentTime = 0;
-        await a.play();
-      } catch (e) {
-        alert('再生できません: ' + e);
-        console.error(e);
-      }
-    });
-    document.getElementById('stop').addEventListener('click', () => {
-      a.pause();
-      a.currentTime = 0;
-    });
-  </script>
+<audio autoplay>
+  <source src="40Hz_music.mp3" type="audio/mpeg">
+</audio>
 </body>
 </html>
