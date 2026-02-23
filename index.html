@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>40Hz Player</title>
+</head>
+<body>
+
+<h1>40Hz Auto Player</h1>
+
+<audio id="player" autoplay>
+  <source src="40Hz_music.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  var audio = document.getElementById("player");
+  audio.play();
+});
+</script>
+
+</body>
+</html>
